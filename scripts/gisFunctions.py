@@ -30,9 +30,8 @@ class Shapefile:
 
         def __open_and_dissolve_shapefile(self) -> gpd.GeoDataFrame:
                 geodataframe = self.__open_shapefile()
-                geodataframe_dissolve = Dissolve(geodataframe)._dissolve_geodataframe()
 
-                return geodataframe_dissolve
+                return Dissolve(geodataframe)._dissolve_geodataframe()
 
 
 class ReprojectGeometries:
@@ -82,14 +81,14 @@ class ReprojectGeometries:
 
 
 
-class Intersect:
+class Intersection:
 
         def __init__(self, geodataframe1: gpd.GeoDataFrame, geodataframe2: gpd.GeoDataFrame):
                 self.geodataframe1 = MakeValidGeometries(geodataframe=geodataframe1)._improve_geometry()
                 self.geodataframe2 = MakeValidGeometries(geodataframe=geodataframe2)._improve_geometry()
         
 
-        def _intersection(self):
+        def _intersection(self) -> gpd.GeoDataFrame:
                 intersect = gpd.overlay(self.geodataframe1, self.geodataframe2, how='intersection')
 
                 return MakeValidGeometries(geodataframe=intersect)._improve_geometry()
@@ -106,7 +105,7 @@ class Area:
         def _calculate_area(self) -> gpd.GeoDataFrame:
                 
                 self.geodataframe[f'{self.column_name}'] = round(self.geodataframe['geometry'].area / 10000, 7)
-                self.geodataframe = self.geodataframe.loc[self.geodataframe[f'{self.column_name}'] > 0.000001]
+                self.geodataframe = self.geodataframe.loc[self.geodataframe[f'{self.column_name}'] > 0.0000001]
                                 
                 return ReprojectGeometries(geodataframe=self.geodataframe, to='4326')._reproject()
 
@@ -261,7 +260,7 @@ class RemoveOverlay:
 
                 self.processed_list:list = []
 
-        def _improve_geometries(self):
+        def _improve_geometries(self) -> gpd.GeoDataFrame:
                 geometry = self.geodataframe
                 try:
                         return self.__remove_geometry_overlays(geodataframe=geometry)
@@ -271,7 +270,7 @@ class RemoveOverlay:
 
 
         
-        def __remove_geometry_overlays(self, geodataframe:gpd.GeoDataFrame):
+        def __remove_geometry_overlays(self, geodataframe:gpd.GeoDataFrame) -> gpd.GeoDataFrame:
                 
                 for index1, row1 in geodataframe.iterrows():
                         for index2, row2 in geodataframe.iterrows():

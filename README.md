@@ -1,4 +1,4 @@
-# Geopandas Operations
+# GIS Operations
 ### Repository of GIS(Geographic Information System) functionality with Geopandas and Shapely.
 
 ## Setup:
